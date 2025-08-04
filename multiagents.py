@@ -7,8 +7,8 @@ from langchain_core.output_parsers import StrOutputParser
 
 
 # model_id = "TinyLlama/TinyLlama_v1.1"
-# model_id = "/home/hossamamer/.cache/huggingface/hub/models--meta-llama--Llama-3.2-3B/snapshots/13afe5124825b4f3751f836b40dafda64c1ed062/"
-model_id = "/home/hossamamer/TTC_checkpoints/TTC-checkpoints/tinyllama-math-code-checkpoint-300"
+model_id = "/home/hossamamer/.cache/huggingface/hub/models--meta-llama--Llama-3.2-3B/snapshots/13afe5124825b4f3751f836b40dafda64c1ed062/"
+# model_id = "/home/hossamamer/TTC_checkpoints/TTC-checkpoints/tinyllama-math-code-checkpoint-300"
 
 tokenizer = AutoTokenizer.from_pretrained(model_id)
 model = AutoModelForCausalLM.from_pretrained(
@@ -25,7 +25,7 @@ pipe = pipeline(
     model=model,
     tokenizer=tokenizer,
     max_new_tokens=256,
-    temperature=0.7,
+    temperature=0.1,
     top_p=0.9,
     repetition_penalty=1.2
 )
