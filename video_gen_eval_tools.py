@@ -59,6 +59,16 @@ def generate_video(state: VQState):
     return state
 
 
+def prompt_rewrite(state: VQState):
+    state["input_prompt"] = STATIC_INPUT_PROMPT
+    print("Prompt Rewrite: Time and weather have been collected. Rewriting prompt..")
+    return state
+
+def planning_agent(state: VQState):
+    print("Planning agent is in progress..")
+    return state
+
+
 def evaluate_video(state: VQState):
     state['cosine_sim'] = runEval(video = state['video_path'], 
                                   input_prompt = state['input_prompt'])
@@ -103,24 +113,34 @@ time_node    = ToolNode([get_time])
 
 
 # Add nodes
+
 vq_graph.add_node("generate_video", generate_video)  # LLM node
+vq_graph.add_node("planning_agent", planning_agent)
 vq_graph.add_node("get_weather", get_weather)
 vq_graph.add_node("get_time", get_time)
+vq_graph.add_node("prompt_rewrite", prompt_rewrite)
 vq_graph.add_node("evaluate_video", evaluate_video)        # Tool node
 vq_graph.add_node("self_reflect", self_reflect)
 
 
 
 # Define edges
-vq_graph.add_edge(START, "generate_video")  # Start -> LLM
+vq_graph.add_edge(START, "planning_agent")  # Start -> LLM
+
+vq_graph.add_edge("planning_agent", "get_weather")  # Start -> LLM
+vq_graph.add_edge("planning_agent", "get_time")  # Start -> LLM
+
 
 # Parallel branch after generate_video
-vq_graph.add_edge("generate_video", "get_weather")
-vq_graph.add_edge("generate_video", "get_time")
+vq_graph.add_edge("get_weather", "prompt_rewrite")
+vq_graph.add_edge("get_time", "prompt_rewrite")
+
+
+vq_graph.add_edge("prompt_rewrite", "generate_video")
 
 # Merge before evaluate_video
-vq_graph.add_edge("get_weather", "evaluate_video")
-vq_graph.add_edge("get_time", "evaluate_video")
+vq_graph.add_edge("generate_video", "evaluate_video")
+# vq_graph.add_edge("get_time", "evaluate_video")
 
 # Branch after generate_video
 # vq_graph.add_edges("generate_video", ["get_weather", "get_time"])
