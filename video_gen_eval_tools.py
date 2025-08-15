@@ -34,8 +34,8 @@ from video_eval import runEval
 # THRESHOLD           = 0.5
 THRESHOLD           = 10
 STATIC_VIDEO_PATH   = "../AskVideos-VideoCLIP/data/a_review_of_a_phone_0X0Jm8QValY.mp4"
-STATIC_INPUT_PROMPT = "a_review_of_a_phone_0X0Jm8QValY"
-# STATIC_INPUT_PROMPT = "cooking video"
+# STATIC_INPUT_PROMPT = "a_review_of_a_phone_0X0Jm8QValY"
+STATIC_INPUT_PROMPT = "cooking video"
 
 
 class VQState(TypedDict):
@@ -87,7 +87,7 @@ def self_reflect(state: VQState):
 def should_stop(state: VQState):
     if state["is_accepted"] or state['count_self_reflect'] > 5:
         return END
-    return "generate_video"
+    return "prompt_rewrite"
 
 
 def get_weather(state: VQState) -> int:
@@ -151,7 +151,7 @@ vq_graph.add_edge("evaluate_video", "self_reflect")
 vq_graph.add_conditional_edges(
     "self_reflect",
     should_stop,
-    [END, "generate_video"]  # LLM -> Tool or LLM -> End
+    [END, "prompt_rewrite"]  # LLM -> Tool or LLM -> End
 )
 
 # vq_graph.add_conditional_edges(
