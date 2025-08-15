@@ -55,7 +55,7 @@ def generate_video(state: VQState):
     state["video_path"] = STATIC_VIDEO_PATH
     state["input_prompt"] = STATIC_INPUT_PROMPT
     # state["input_prompt"] = "cooking video"
-    print(f"Reflect_Iteration={state['count_self_reflect']} Video has been generated!")
+    print(f"Iteration={state['count_self_reflect']} Video has been generated!")
     return state
 
 
@@ -72,7 +72,7 @@ def planning_agent(state: VQState):
 def evaluate_video(state: VQState):
     state['cosine_sim'] = runEval(video = state['video_path'], 
                                   input_prompt = state['input_prompt'])
-    print(f"Reflect_Iteration={state['count_self_reflect']} Video has been evaluated!")
+    print(f"Iteration={state['count_self_reflect']} Video has been evaluated!")
     return state
 
 def self_reflect(state: VQState):
@@ -85,7 +85,7 @@ def self_reflect(state: VQState):
     return state
 
 def should_stop(state: VQState):
-    if state["is_accepted"] or state['count_self_reflect'] > 5:
+    if state["is_accepted"] or state['count_self_reflect'] > 3:
         return END
     return "prompt_rewrite"
 
